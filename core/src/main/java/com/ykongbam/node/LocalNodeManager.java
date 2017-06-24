@@ -1,8 +1,8 @@
-package com.kuchbhi.jobhi.node;
+package com.ykongbam.node;
 
-import com.kuchbhi.jobhi.task.PartialTask;
-import com.kuchbhi.jobhi.task.PartialTaskResult;
-import com.kuchbhi.jobhi.task.TaskExecutor;
+import com.ykongbam.task.PartialTask;
+import com.ykongbam.task.PartialTaskResult;
+import com.ykongbam.task.TaskExecutor;
 import lombok.AllArgsConstructor;
 
 import java.util.*;
@@ -11,7 +11,7 @@ import java.util.concurrent.Future;
 
 /**
  * Created with IntelliJ IDEA.
- * User: yoihenba.k (yoihenba.k@flipkart.com)
+ * User: ykongbam.k (ykongbam.k@flipkart.com)
  * Date: 23/06/17
  */
 

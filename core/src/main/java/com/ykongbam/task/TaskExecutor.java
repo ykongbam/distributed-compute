@@ -1,10 +1,10 @@
-package com.kuchbhi.jobhi.task;
+package com.ykongbam.task;
 
 import java.util.function.Function;
 
 /**
  * Created with IntelliJ IDEA.
- * User: yoihenba.k (yoihenba.k@flipkart.com)
+ * User: ykongbam.k (ykongbam.k@flipkart.com)
  * Date: 23/06/17
  */
 

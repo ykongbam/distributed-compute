@@ -1,14 +1,14 @@
-package com.kuchbhi.jobhi.task.mapReduce;
+package com.ykongbam.task.mapReduce;
 
-import com.kuchbhi.jobhi.task.TaskResponse;
-import com.kuchbhi.jobhi.task.Tuple;
+import com.ykongbam.task.TaskResponse;
+import com.ykongbam.task.Tuple;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
- * User: yoihenba.k (yoihenba.k@flipkart.com)
+ * User: ykongbam.k (ykongbam.k@flipkart.com)
  * Date: 23/06/17
  */
 

@@ -1,12 +1,12 @@
-package com.kuchbhi.jobhi.task.additionTask;
+package com.ykongbam.task.addition;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
-import com.kuchbhi.jobhi.node.NodeManager;
-import com.kuchbhi.jobhi.task.PartialTask;
-import com.kuchbhi.jobhi.task.PartialTaskResult;
-import com.kuchbhi.jobhi.task.Task;
-import com.kuchbhi.jobhi.task.Tuple;
+import com.ykongbam.task.Task;
+import com.ykongbam.node.NodeManager;
+import com.ykongbam.task.PartialTask;
+import com.ykongbam.task.PartialTaskResult;
+import com.ykongbam.task.Tuple;
 import lombok.AllArgsConstructor;
 
 import java.util.HashSet;
@@ -19,7 +19,7 @@ import java.util.concurrent.TimeoutException;
 
 /**
  * Created with IntelliJ IDEA.
- * User: yoihenba.k (yoihenba.k@flipkart.com)
+ * User: ykongbam.k (ykongbam.k@flipkart.com)
  * Date: 23/06/17
  */
 

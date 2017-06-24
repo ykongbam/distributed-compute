@@ -1,14 +1,14 @@
-package com.kuchbhi.jobhi;
+package com.ykongbam;
 
-import com.kuchbhi.jobhi.task.Task;
-import com.kuchbhi.jobhi.task.TaskResponse;
+import com.ykongbam.task.Task;
+import com.ykongbam.task.TaskResponse;
 import lombok.AllArgsConstructor;
 
 import java.util.concurrent.Future;
 
 /**
  * Created with IntelliJ IDEA.
- * User: yoihenba.k (yoihenba.k@flipkart.com)
+ * User: ykongbam.k (ykongbam.k@flipkart.com)
  * Date: 23/06/17
  */
 
