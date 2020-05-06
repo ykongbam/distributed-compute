@@ -9,14 +9,14 @@ import java.util.Collection;
 
 /**
  * Created with IntelliJ IDEA.
- * User: ykongbam.k (ykongbam.k@flipkart.com)
+ * User: ykongbam (ykongbam@gmail.com)
  * Date: 23/06/17
  */
 
 public class AdditionTaskExecutor implements TaskExecutor<AdditionPartialTask>{
 
     public PartialTaskResult apply(AdditionPartialTask additionPartialTask) {
-        Collection<Tuple<Number>> resultTuples = null;
+        Collection<Tuple<Number>> resultTuples;
         if (additionPartialTask.getTuples() == null)
             resultTuples = ImmutableSet.of(new Tuple<>(0));
         else if(additionPartialTask.getTuples().size() == 1) {
