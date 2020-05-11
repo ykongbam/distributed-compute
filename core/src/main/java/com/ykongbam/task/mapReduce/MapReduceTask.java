@@ -1,23 +1,30 @@
 package com.ykongbam.task.mapReduce;
 
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
-import com.ykongbam.task.Task;
-import com.ykongbam.task.mapReduce.executors.wordCount.ShuffleExecutor;
-import com.ykongbam.task.mapReduce.map.MapperResponse;
 import com.ykongbam.node.NodeManager;
 import com.ykongbam.task.PartialTask;
 import com.ykongbam.task.PartialTaskResult;
+import com.ykongbam.task.Task;
 import com.ykongbam.task.Tuple;
 import com.ykongbam.task.mapReduce.executors.wordCount.MapperExecutor;
+import com.ykongbam.task.mapReduce.executors.wordCount.ReduceExecutor;
+import com.ykongbam.task.mapReduce.executors.wordCount.ShuffleExecutor;
 import com.ykongbam.task.mapReduce.map.MapPartialTask;
+import com.ykongbam.task.mapReduce.map.MapperResponse;
+import com.ykongbam.task.mapReduce.reduce.ReducePartialTask;
+import com.ykongbam.task.mapReduce.reduce.ReduceResponse;
 import com.ykongbam.task.mapReduce.shuffleSort.ShufflePartialTask;
 import com.ykongbam.task.mapReduce.shuffleSort.ShuffleResponse;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.tuple.Pair;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -35,6 +42,7 @@ public class MapReduceTask implements Task {
     NodeManager nodeManager;
     MapperExecutor mapperExecutor;
     ShuffleExecutor shuffleExecutor;
+    ReduceExecutor reduceExecutor;
     private Set<Tuple<Pair<String, String>>> inputTuples;
 
     @Override
@@ -60,7 +68,7 @@ public class MapReduceTask implements Task {
 
             @Override
             public MapReduceTaskResponse get() throws InterruptedException, ExecutionException {
-                return null;
+                return new MapReduceTaskResponse(response);
             }
 
             @Override
@@ -125,6 +133,17 @@ public class MapReduceTask implements Task {
     }
 
     private Set<Tuple<Pair<String,String>>> reduce(Set<Tuple<Pair<String, Collection<String>>>> shuffleOutput) {
-        return null;
+        Set<Tuple<Pair<String, String>>> response = new HashSet<>();
+        PartialTask partialTask = new ReducePartialTask(shuffleOutput);
+        Set<Future<PartialTaskResult>> reduceResponseFuture = nodeManager.submit(ImmutableSet.of(partialTask), reduceExecutor);
+        for (Future<PartialTaskResult> partialTaskResultFuture : reduceResponseFuture) {
+            try {
+                ReduceResponse partialTaskResult = (ReduceResponse) partialTaskResultFuture.get();
+                response.addAll(partialTaskResult.getTuples());
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
+        }
+        return response;
     }
 }

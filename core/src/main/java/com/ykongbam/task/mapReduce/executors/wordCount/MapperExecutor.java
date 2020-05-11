@@ -22,8 +22,9 @@ public class MapperExecutor implements TaskExecutor<MapPartialTask> {
     public PartialTaskResult apply(MapPartialTask mapPartialTask) {
         Collection<Tuple<Pair<String, String>>> resultTuples = new HashSet<>();
         Collection<Tuple<Pair<String, String>>> tuples = mapPartialTask.getTuples();
-        for (Tuple<Pair<String, String>> inputTuple: tuples) {
-            resultTuples.add(new Tuple<>(new ImmutablePair<>(inputTuple.get().getKey(),Integer.toString(1))));
+        //TODO tokenize values
+        for (Tuple<Pair<String, String>> inputTuple : tuples) {
+            resultTuples.add(new Tuple<>(new ImmutablePair<>(inputTuple.get().getValue(), Integer.toString(1))));
         }
         return new MapperResponse(resultTuples);
     }

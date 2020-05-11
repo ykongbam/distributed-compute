@@ -1,6 +1,6 @@
-package com.ykongbam.task.mapReduce.shuffleSort;
+package com.ykongbam.task.mapReduce.reduce;
 
-import com.ykongbam.task.PartialTaskResult;
+import com.ykongbam.task.PartialTask;
 import com.ykongbam.task.Tuple;
 import lombok.AllArgsConstructor;
 import lombok.ToString;
@@ -8,15 +8,9 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.Collection;
 
-/**
- * Created with IntelliJ IDEA.
- * User: ykongbam (ykongbam@gmail.com)
- * Date: 23/06/17
- */
-
 @AllArgsConstructor
 @ToString
-public class ShuffleResponse implements PartialTaskResult<Pair<String, Collection<String>>> {
+public class ReducePartialTask implements PartialTask<Pair<String, Collection<String>>> {
     Collection<Tuple<Pair<String, Collection<String>>>> tuples;
 
     @Override

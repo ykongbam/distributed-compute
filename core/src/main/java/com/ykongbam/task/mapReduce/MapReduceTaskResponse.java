@@ -2,6 +2,8 @@ package com.ykongbam.task.mapReduce;
 
 import com.ykongbam.task.TaskResponse;
 import com.ykongbam.task.Tuple;
+import lombok.AllArgsConstructor;
+import lombok.ToString;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.Set;
@@ -12,6 +14,8 @@ import java.util.Set;
  * Date: 23/06/17
  */
 
+@AllArgsConstructor
+@ToString
 public class MapReduceTaskResponse implements TaskResponse {
     private Set<Tuple<Pair<String, String>>> tuples;
 }

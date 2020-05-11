@@ -1,4 +1,4 @@
-package com.ykongbam.task.mapReduce.map;
+package com.ykongbam.task.mapReduce.reduce;
 
 import com.ykongbam.task.PartialTaskResult;
 import com.ykongbam.task.Tuple;
@@ -7,14 +7,8 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.Collection;
 
-/**
- * Created with IntelliJ IDEA.
- * User: ykongbam (ykongbam@gmail.com)
- * Date: 23/06/17
- */
-
 @AllArgsConstructor
-public class MapperResponse implements PartialTaskResult<Pair<String, String>> {
+public class ReduceResponse implements PartialTaskResult<Pair<String, String>> {
     Collection<Tuple<Pair<String, String>>> tuples;
     @Override
     public Collection<Tuple<Pair<String, String>>> getTuples() {

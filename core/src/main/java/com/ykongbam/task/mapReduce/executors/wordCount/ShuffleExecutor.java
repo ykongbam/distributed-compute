@@ -1,6 +1,6 @@
 package com.ykongbam.task.mapReduce.executors.wordCount;
 
-import com.google.common.collect.LinkedHashMultimap;
+import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import com.ykongbam.task.PartialTaskResult;
 import com.ykongbam.task.TaskExecutor;
@@ -26,7 +26,7 @@ public class ShuffleExecutor implements TaskExecutor<ShufflePartialTask> {
     public PartialTaskResult apply(ShufflePartialTask shufflePartialTask) {
         Collection<Tuple<Pair<String, Collection<String>>>> resultTuples = new HashSet<>();
         Collection<Tuple<Pair<String, String>>> tuples = shufflePartialTask.getTuples();
-        Multimap<String, String> multimap = LinkedHashMultimap.create();
+        Multimap<String, String> multimap = ArrayListMultimap.create();
 
         for (Tuple<Pair<String, String>> inputTuple: tuples) {
             multimap.put(inputTuple.get().getKey(), inputTuple.get().getValue());
