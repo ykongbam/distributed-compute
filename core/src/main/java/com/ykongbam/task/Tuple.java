@@ -1,6 +1,7 @@
 package com.ykongbam.task;
 
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 /**
@@ -11,6 +12,7 @@ import lombok.ToString;
 
 @AllArgsConstructor
 @ToString
+@EqualsAndHashCode
 public class Tuple<T> {
     private T value;
     public T get() {

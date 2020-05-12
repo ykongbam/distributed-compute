@@ -8,7 +8,8 @@ import com.ykongbam.node.NodeManager;
 import com.ykongbam.task.TaskResponse;
 import com.ykongbam.task.Tuple;
 import com.ykongbam.task.mapReduce.MapReduceTask;
-import com.ykongbam.task.mapReduce.executors.wordCount.MapperExecutor;
+import com.ykongbam.task.mapReduce.executors.wordCount.WordCountMapper;
+import com.ykongbam.task.mapReduce.map.MapperExecutor;
 import com.ykongbam.task.mapReduce.executors.wordCount.ReduceExecutor;
 import com.ykongbam.task.mapReduce.executors.wordCount.ShuffleExecutor;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -42,7 +43,7 @@ public class Server {
         Future<? extends TaskResponse> taskResponseFuture = taskManager.submit(
                 new MapReduceTask(
                         nodeManager,
-                        new MapperExecutor(),
+                        new MapperExecutor(new WordCountMapper()),
                         new ShuffleExecutor(),
                         new ReduceExecutor(),
                         tuples));

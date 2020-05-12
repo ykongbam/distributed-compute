@@ -3,6 +3,7 @@ package com.ykongbam.task.mapReduce.map;
 import com.ykongbam.task.PartialTaskResult;
 import com.ykongbam.task.Tuple;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.Collection;
@@ -14,6 +15,7 @@ import java.util.Collection;
  */
 
 @AllArgsConstructor
+@EqualsAndHashCode
 public class MapperResponse implements PartialTaskResult<Pair<String, String>> {
     Collection<Tuple<Pair<String, String>>> tuples;
     @Override

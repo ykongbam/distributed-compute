@@ -9,7 +9,7 @@ import com.ykongbam.task.PartialTask;
 import com.ykongbam.task.PartialTaskResult;
 import com.ykongbam.task.Task;
 import com.ykongbam.task.Tuple;
-import com.ykongbam.task.mapReduce.executors.wordCount.MapperExecutor;
+import com.ykongbam.task.mapReduce.map.MapperExecutor;
 import com.ykongbam.task.mapReduce.executors.wordCount.ReduceExecutor;
 import com.ykongbam.task.mapReduce.executors.wordCount.ShuffleExecutor;
 import com.ykongbam.task.mapReduce.map.MapPartialTask;
