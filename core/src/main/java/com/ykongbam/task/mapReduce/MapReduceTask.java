@@ -1,35 +1,19 @@
 package com.ykongbam.task.mapReduce;
 
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.LinkedHashMultimap;
-import com.google.common.collect.Multimap;
-import com.ykongbam.node.NodeManager;
-import com.ykongbam.task.PartialTask;
-import com.ykongbam.task.PartialTaskResult;
 import com.ykongbam.task.Task;
 import com.ykongbam.task.Tuple;
-import com.ykongbam.task.mapReduce.map.MapperExecutor;
-import com.ykongbam.task.mapReduce.executors.wordCount.ReduceExecutor;
-import com.ykongbam.task.mapReduce.executors.wordCount.ShuffleExecutor;
-import com.ykongbam.task.mapReduce.map.MapPartialTask;
-import com.ykongbam.task.mapReduce.map.MapperResponse;
-import com.ykongbam.task.mapReduce.reduce.ReducePartialTask;
-import com.ykongbam.task.mapReduce.reduce.ReduceResponse;
-import com.ykongbam.task.mapReduce.shuffleSort.ShufflePartialTask;
-import com.ykongbam.task.mapReduce.shuffleSort.ShuffleResponse;
+import com.ykongbam.task.mapReduce.map.MapStage;
+import com.ykongbam.task.mapReduce.reduce.ReduceStage;
+import com.ykongbam.task.mapReduce.shuffleSort.ShuffleStage;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.stream.Collectors;
 
 /**
  * Created with IntelliJ IDEA.
@@ -39,17 +23,16 @@ import java.util.stream.Collectors;
 
 @AllArgsConstructor
 public class MapReduceTask implements Task {
-    NodeManager nodeManager;
-    MapperExecutor mapperExecutor;
-    ShuffleExecutor shuffleExecutor;
-    ReduceExecutor reduceExecutor;
-    private Set<Tuple<Pair<String, String>>> inputTuples;
+    private MapStage mapStage;
+    private ShuffleStage shuffleStage;
+    private ReduceStage reduceStage;
+    private List<Tuple<Pair<String, String>>> inputTuples;
 
     @Override
     public Future<MapReduceTaskResponse> process() {
-        Set<Tuple<Pair<String, String>>> intermediateOutput = map();
-        Set<Tuple<Pair<String, Collection<String>>>> shuffleOutput = shuffle(intermediateOutput);
-        Set<Tuple<Pair<String, String>>> response = reduce(shuffleOutput);
+        List<Tuple<Pair<String, String>>> intermediateOutput = mapStage.map(inputTuples);
+        List<Tuple<Pair<String, Collection<String>>>> shuffleOutput = shuffleStage.shuffle(intermediateOutput);
+        List<Tuple<Pair<String, String>>> response = reduceStage.reduce(shuffleOutput);
         return new Future<MapReduceTaskResponse>() {
             @Override
             public boolean cancel(boolean mayInterruptIfRunning) {
@@ -78,72 +61,5 @@ public class MapReduceTask implements Task {
         };
     }
 
-    private Set<Tuple<Pair<String, String>>> map() {
-        Set<Tuple<Pair<String, String>>> response = new HashSet<>();
-        Set<PartialTask> partialTasks = splitInput();
-        Set<Future<PartialTaskResult>> mapperResposeFutures = nodeManager.submit(partialTasks, mapperExecutor);
-        for (Future<PartialTaskResult> partialTaskResultFuture : mapperResposeFutures) {
-            try {
-                MapperResponse partialTaskResult = (MapperResponse) partialTaskResultFuture.get();
-                for (Tuple<Pair<String, String>> tuple : partialTaskResult.getTuples()) {
-                    response.add(tuple);
-                }
-            } catch (InterruptedException | ExecutionException e) {
-                e.printStackTrace();
-            }
-        }
-        return response;
-    }
 
-    private Set<PartialTask> splitInput() {
-        int activeNodeCount = nodeManager.getActiveNodeCount();
-        int partitionSize = inputTuples.size() / activeNodeCount;
-        Set<PartialTask> partialTasks = new HashSet<>();
-        for (List<Tuple<Pair<String, String>>> partialTuples : Iterables.partition(inputTuples, partitionSize)) {
-            partialTasks.add(new MapPartialTask(partialTuples));
-        }
-        return partialTasks;
-    }
-
-    private Set<Tuple<Pair<String, Collection<String>>>> shuffle(Set<Tuple<Pair<String, String>>> intermediateOutput) {
-        Set<Tuple<Pair<String, Collection<String>>>> response = new HashSet<>();
-        Set<PartialTask> partialTasks =  splitShuffle(intermediateOutput);
-        Set<Future<PartialTaskResult>> shuffleResponseFuture = nodeManager.submit(partialTasks, shuffleExecutor);
-        for (Future<PartialTaskResult> partialTaskResultFuture : shuffleResponseFuture) {
-            try {
-                ShuffleResponse partialTaskResult = (ShuffleResponse) partialTaskResultFuture.get();
-                for (Tuple<Pair<String, Collection<String>>> tuple : partialTaskResult.getTuples()) {
-                    response.add(tuple);
-                }
-            } catch (InterruptedException | ExecutionException e) {
-                e.printStackTrace();
-            }
-        }
-        return response;
-    }
-
-    private Set<PartialTask> splitShuffle(Set<Tuple<Pair<String, String>>> intermediateOutput) {
-        Multimap<Integer, Tuple<Pair<String, String>>> buckets = LinkedHashMultimap.create();
-        for (Tuple<Pair<String, String>> tuple : intermediateOutput) {
-            buckets.put(tuple.get().getKey().hashCode() % nodeManager.getActiveNodeCount(), tuple);
-        }
-        return buckets.asMap().entrySet().stream()
-                .map(entry -> new ShufflePartialTask(entry.getValue()))
-                .collect(Collectors.toSet());
-    }
-
-    private Set<Tuple<Pair<String,String>>> reduce(Set<Tuple<Pair<String, Collection<String>>>> shuffleOutput) {
-        Set<Tuple<Pair<String, String>>> response = new HashSet<>();
-        PartialTask partialTask = new ReducePartialTask(shuffleOutput);
-        Set<Future<PartialTaskResult>> reduceResponseFuture = nodeManager.submit(ImmutableSet.of(partialTask), reduceExecutor);
-        for (Future<PartialTaskResult> partialTaskResultFuture : reduceResponseFuture) {
-            try {
-                ReduceResponse partialTaskResult = (ReduceResponse) partialTaskResultFuture.get();
-                response.addAll(partialTaskResult.getTuples());
-            } catch (InterruptedException | ExecutionException e) {
-                e.printStackTrace();
-            }
-        }
-        return response;
-    }
 }

@@ -4,7 +4,7 @@ import com.ykongbam.task.PartialTask;
 import com.ykongbam.task.PartialTaskResult;
 import com.ykongbam.task.TaskExecutor;
 
-import java.util.Set;
+import java.util.Collection;
 import java.util.concurrent.Future;
 
 /**
@@ -16,5 +16,5 @@ import java.util.concurrent.Future;
 public interface NodeManager {
 
     int getActiveNodeCount();
-    Set<Future<PartialTaskResult>> submit(Set<PartialTask> partialTasks, TaskExecutor taskExecutor);
+    Collection<Future<PartialTaskResult>> submit(Collection<PartialTask> partialTasks, TaskExecutor taskExecutor);
 }

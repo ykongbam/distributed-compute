@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.ToString;
 import org.apache.commons.lang3.tuple.Pair;
 
-import java.util.Collection;
+import java.util.PriorityQueue;
 
 /**
  * Created with IntelliJ IDEA.
@@ -16,11 +16,11 @@ import java.util.Collection;
 
 @AllArgsConstructor
 @ToString
-public class ShuffleResponse implements PartialTaskResult<Pair<String, Collection<String>>> {
-    Collection<Tuple<Pair<String, Collection<String>>>> tuples;
+public class ShuffleResponse implements PartialTaskResult<Pair<String, String>> {
+    PriorityQueue<Tuple<Pair<String, String>>> tuples;
 
     @Override
-    public Collection<Tuple<Pair<String, Collection<String>>>> getTuples() {
+    public PriorityQueue<Tuple<Pair<String, String>>> getTuples() {
         return tuples;
     }
 }

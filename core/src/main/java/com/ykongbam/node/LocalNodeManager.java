@@ -25,7 +25,7 @@ public class LocalNodeManager implements NodeManager{
     }
 
     @Override
-    public Set<Future<PartialTaskResult>> submit(Set<PartialTask> partialTasks, TaskExecutor taskExecutor) {
+    public Collection<Future<PartialTaskResult>> submit(Collection<PartialTask> partialTasks, TaskExecutor taskExecutor) {
         Queue<PartialTask> queue = new ConcurrentLinkedQueue<>(partialTasks);
         Set<Future<PartialTaskResult>> response = new HashSet<>();
         while (queue.size() != 0) {

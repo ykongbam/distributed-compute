@@ -2,13 +2,14 @@ package com.ykongbam.task.addition;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
-import com.ykongbam.task.Task;
 import com.ykongbam.node.NodeManager;
 import com.ykongbam.task.PartialTask;
 import com.ykongbam.task.PartialTaskResult;
+import com.ykongbam.task.Task;
 import com.ykongbam.task.Tuple;
 import lombok.AllArgsConstructor;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -26,7 +27,7 @@ import java.util.concurrent.TimeoutException;
 @AllArgsConstructor
 public class AdditionTask implements Task {
     NodeManager nodeManager;
-    Set<Tuple<Number>> tuples;
+    List<Tuple<Number>> tuples;
 
     @Override
     public Future<AdditionTaskResponse> process() {
@@ -46,7 +47,7 @@ public class AdditionTask implements Task {
     }
 
     public Future<AdditionTaskResponse> joinTask(Set<PartialTask> partialTasks) {
-        Set<Future<PartialTaskResult>> results = nodeManager.submit(partialTasks, new AdditionTaskExecutor());
+        Collection<Future<PartialTaskResult>> results = nodeManager.submit(partialTasks, new AdditionTaskExecutor());
 
         return new Future<AdditionTaskResponse>() {
             @Override

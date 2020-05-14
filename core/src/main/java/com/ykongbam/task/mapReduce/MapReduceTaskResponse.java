@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.ToString;
 import org.apache.commons.lang3.tuple.Pair;
 
-import java.util.Set;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -17,5 +17,5 @@ import java.util.Set;
 @AllArgsConstructor
 @ToString
 public class MapReduceTaskResponse implements TaskResponse {
-    private Set<Tuple<Pair<String, String>>> tuples;
+    private List<Tuple<Pair<String, String>>> tuples;
 }
