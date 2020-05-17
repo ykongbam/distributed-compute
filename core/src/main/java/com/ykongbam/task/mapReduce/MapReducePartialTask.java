@@ -1,4 +1,4 @@
-package com.ykongbam.task.mapReduce.reduce;
+package com.ykongbam.task.mapReduce;
 
 import com.ykongbam.task.PartialTask;
 import com.ykongbam.task.Tuple;
@@ -10,11 +10,11 @@ import java.util.Collection;
 
 @AllArgsConstructor
 @ToString
-public class ReducePartialTask implements PartialTask<Pair<String, Collection<String>>> {
-    Collection<Tuple<Pair<String, Collection<String>>>> tuples;
+public class MapReducePartialTask<K, V> implements PartialTask<Pair<K, V>> {
+    Collection<Tuple<Pair<K, V>>> tuples;
 
     @Override
-    public Collection<Tuple<Pair<String, Collection<String>>>> getTuples() {
+    public Collection<Tuple<Pair<K ,V>>> getTuples() {
         return tuples;
     }
 }

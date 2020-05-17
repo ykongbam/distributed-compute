@@ -9,13 +9,11 @@ import org.junit.Test;
 
 import java.util.Collection;
 
-import static org.junit.Assert.*;
-
 public class WordCountMapperTest {
     private WordCountMapper wordCountMapper;
     @Before
     public void setUp() throws Exception {
-        wordCountMapper = new WordCountMapper();
+        this.wordCountMapper = new WordCountMapper();
     }
 
     @Test

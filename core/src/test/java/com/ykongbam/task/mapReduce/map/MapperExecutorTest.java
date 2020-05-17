@@ -3,6 +3,7 @@ package com.ykongbam.task.mapReduce.map;
 import com.google.common.collect.ImmutableList;
 import com.ykongbam.task.PartialTaskResult;
 import com.ykongbam.task.Tuple;
+import com.ykongbam.task.mapReduce.MapReducePartialTask;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Assert;
@@ -28,11 +29,9 @@ public class MapperExecutorTest {
     }
 
     @Test
-    public void apply() {
-        Collection<Tuple<Pair<String, String>>> inputTuples = ImmutableList.of(
-                new Tuple<>(ImmutablePair.of("left", "right")),
-                new Tuple<>(ImmutablePair.of("left2", "right2"))
-        );
+    public void testApply() {
+        Collection<Tuple<Pair<String, String>>> inputTuples = Fixtures.getInputTuples();
+
         when(mapper.map(eq("left"), eq("right"))).thenReturn(
                 ImmutableList.of(
                         ImmutablePair.of("11","11"),
@@ -46,17 +45,9 @@ public class MapperExecutorTest {
                         ImmutablePair.of("23", "23")
                 )
         );
-        PartialTaskResult response = mapperExecutor.apply(new MapPartialTask(inputTuples));
+        PartialTaskResult response = mapperExecutor.apply(new MapReducePartialTask<>(inputTuples));
 
-        PartialTaskResult<Pair<String, String>> expectedResponse = new MapperResponse(
-                ImmutableList.of(
-                        new Tuple<>(ImmutablePair.of("11", "11")),
-                        new Tuple<>(ImmutablePair.of("12", "12")),
-                        new Tuple<>(ImmutablePair.of("21", "21")),
-                        new Tuple<>(ImmutablePair.of("22", "22")),
-                        new Tuple<>(ImmutablePair.of("23", "23"))
-                )
-        );
+        PartialTaskResult<Pair<String, String>> expectedResponse = Fixtures.getExpectedResponse();
         Assert.assertEquals(expectedResponse, response);
     }
 }

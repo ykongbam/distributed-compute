@@ -1,11 +1,10 @@
 package com.ykongbam.task.mapReduce.shuffleSort;
 
-import com.google.common.collect.LinkedListMultimap;
-import com.google.common.collect.Multimap;
 import com.ykongbam.node.NodeManager;
 import com.ykongbam.task.PartialTask;
 import com.ykongbam.task.PartialTaskResult;
 import com.ykongbam.task.Tuple;
+import com.ykongbam.task.mapReduce.splitter.Splitter;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -13,16 +12,17 @@ import org.apache.commons.lang3.tuple.Pair;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import java.util.stream.Collectors;
+
 
 @AllArgsConstructor
 public class ShuffleStage {
     private NodeManager nodeManager;
     private ShuffleExecutor shuffleExecutor;
+    private Splitter<String, String> splitter;
 
     public List<Tuple<Pair<String, Collection<String>>>> shuffle(List<Tuple<Pair<String, String>>> intermediateOutput) {
         List<Tuple<Pair<String, Collection<String>>>> response = new ArrayList<>();
-        List<PartialTask> partialTasks = splitShuffle(intermediateOutput);
+        List<PartialTask> partialTasks = splitter.splitInput(intermediateOutput);
         List<ShuffleResponse> partialTaskResults = new ArrayList<>();
 
         Collection<Future<PartialTaskResult>> shuffleResponseFuture = nodeManager.submit(partialTasks, shuffleExecutor);
@@ -37,8 +37,9 @@ public class ShuffleStage {
         PriorityQueue<Pair<Tuple<Pair<String, String>>, PriorityQueue<Tuple<Pair<String, String>>>>> combined = new PriorityQueue<>(
                 1,
                 Comparator.comparing(t -> t.getKey().get().getKey()));
-        //TODO Handle corner case when queue is empty
+
         partialTaskResults.stream()
+                .filter(shuffleResponse -> !shuffleResponse.tuples.isEmpty())
                 .map(partialTask -> ImmutablePair.of(partialTask.getTuples().poll(), partialTask.getTuples()))
                 .forEach(combined::add);
 
@@ -59,13 +60,4 @@ public class ShuffleStage {
         return response;
     }
 
-    private List<PartialTask> splitShuffle(List<Tuple<Pair<String, String>>> intermediateOutput) {
-        Multimap<Integer, Tuple<Pair<String, String>>> buckets = LinkedListMultimap.create();
-        for (Tuple<Pair<String, String>> tuple : intermediateOutput) {
-            buckets.put(tuple.get().getKey().hashCode() % nodeManager.getActiveNodeCount(), tuple);
-        }
-        return buckets.asMap().entrySet().stream()
-                .map(entry -> new ShufflePartialTask(entry.getValue()))
-                .collect(Collectors.toList());
-    }
 }

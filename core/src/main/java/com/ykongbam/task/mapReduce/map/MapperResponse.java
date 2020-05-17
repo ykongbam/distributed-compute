@@ -17,7 +17,7 @@ import java.util.Collection;
 @AllArgsConstructor
 @EqualsAndHashCode
 public class MapperResponse implements PartialTaskResult<Pair<String, String>> {
-    Collection<Tuple<Pair<String, String>>> tuples;
+    final Collection<Tuple<Pair<String, String>>> tuples;
     @Override
     public Collection<Tuple<Pair<String, String>>> getTuples() {
         return tuples;

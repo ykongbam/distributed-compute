@@ -14,7 +14,7 @@ import lombok.ToString;
 @ToString
 @EqualsAndHashCode
 public class Tuple<T> {
-    private T value;
+    private final T value;
     public T get() {
         return value;
     }

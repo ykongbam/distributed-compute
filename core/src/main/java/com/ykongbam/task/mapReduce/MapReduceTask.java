@@ -23,10 +23,10 @@ import java.util.concurrent.TimeoutException;
 
 @AllArgsConstructor
 public class MapReduceTask implements Task {
-    private MapStage mapStage;
-    private ShuffleStage shuffleStage;
-    private ReduceStage reduceStage;
-    private List<Tuple<Pair<String, String>>> inputTuples;
+    private final MapStage mapStage;
+    private final ShuffleStage shuffleStage;
+    private final ReduceStage reduceStage;
+    private final List<Tuple<Pair<String, String>>> inputTuples;
 
     @Override
     public Future<MapReduceTaskResponse> process() {

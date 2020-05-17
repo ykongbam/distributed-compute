@@ -3,6 +3,7 @@ package com.ykongbam.task.mapReduce.map;
 import com.ykongbam.task.PartialTaskResult;
 import com.ykongbam.task.TaskExecutor;
 import com.ykongbam.task.Tuple;
+import com.ykongbam.task.mapReduce.MapReducePartialTask;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -17,11 +18,11 @@ import java.util.stream.Collectors;
  */
 
 @AllArgsConstructor
-public class MapperExecutor implements TaskExecutor<MapPartialTask> {
+public class MapperExecutor implements TaskExecutor<MapReducePartialTask<String, String>> {
     private Mapper<String, String, String, String> mapper;
 
     @Override
-    public PartialTaskResult apply(MapPartialTask mapPartialTask) {
+    public PartialTaskResult apply(MapReducePartialTask<String, String> mapPartialTask) {
         Collection<Tuple<Pair<String, String>>> resultTuples = new ArrayList<>();
         Collection<Tuple<Pair<String, String>>> tuples = mapPartialTask.getTuples();
 

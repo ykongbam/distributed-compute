@@ -7,13 +7,16 @@ import com.ykongbam.node.NodeManager;
 import com.ykongbam.task.TaskResponse;
 import com.ykongbam.task.Tuple;
 import com.ykongbam.task.mapReduce.MapReduceTask;
-import com.ykongbam.task.mapReduce.executors.wordCount.ReduceExecutor;
+import com.ykongbam.task.mapReduce.executors.wordCount.WordCountReducer;
+import com.ykongbam.task.mapReduce.reduce.ReduceExecutor;
 import com.ykongbam.task.mapReduce.executors.wordCount.WordCountMapper;
 import com.ykongbam.task.mapReduce.map.MapStage;
 import com.ykongbam.task.mapReduce.map.MapperExecutor;
 import com.ykongbam.task.mapReduce.reduce.ReduceStage;
 import com.ykongbam.task.mapReduce.shuffleSort.ShuffleExecutor;
 import com.ykongbam.task.mapReduce.shuffleSort.ShuffleStage;
+import com.ykongbam.task.mapReduce.splitter.FixedPartitionSplitter;
+import com.ykongbam.task.mapReduce.splitter.HashBasedSplitter;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -43,9 +46,9 @@ public class MapReduceExample {
         );
         Future<? extends TaskResponse> taskResponseFuture = taskManager.submit(
                 new MapReduceTask(
-                        new MapStage(nodeManager, new MapperExecutor(new WordCountMapper())),
-                        new ShuffleStage(nodeManager, new ShuffleExecutor()),
-                        new ReduceStage(nodeManager, new ReduceExecutor()),
+                        new MapStage(nodeManager, new MapperExecutor(new WordCountMapper()), new FixedPartitionSplitter<>(2)),
+                        new ShuffleStage(nodeManager, new ShuffleExecutor(), new HashBasedSplitter<>(4)),
+                        new ReduceStage(nodeManager, new ReduceExecutor(new WordCountReducer()), new FixedPartitionSplitter<>(2)),
                         tuples));
         TaskResponse taskResponse = null;
         try {
